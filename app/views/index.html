@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alimentos Gablou</title>
+    <link rel="stylesheet" href="/app/static/css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <div class="logo">
+                        <img src="/app/static/images/logo1.png" alt="Gablou Logo" class="logo-img">
+                        <span class="logo-text">Gablou</span>
+                    </div>
+                    <div class="nav-right">
+                        <div class="delivery-info">
+                            <span>Deliver to:</span>
+                            <span class="location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Current Location: Mohammadpur Bus Stand, Dhaka
+                            </span>
+                        </div>
+                        <div class="nav-actions">
+                            <button class="search-btn" onclick="window.location.href='/app/views/search.html'">
+                                <i class="fas fa-search"></i>
+                                Search Food
+                            </button>
+                            <button class="login-btn">
+                                <i class="fas fa-user"></i>
+                                Login
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Are you starving?</h1>
+                    <p>Within a few clicks, find meals that are accessible near you</p>
+                    
+                    <div class="search-box">
+                        <div class="search-tabs">
+                            <button class="tab active" data-tab="delivery">
+                                <i class="fas fa-motorcycle"></i>
+                                Delivery
+                            </button>
+                            <button class="tab" data-tab="pickup">
+                                <i class="fas fa-shopping-bag"></i>
+                                Pickup
+                            </button>
+                        </div>
+                        <div class="search-form">
+                            <div class="location-input">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <input type="text" placeholder="Enter Your Address" id="addressInput">
+                            </div>
+                            <button class="find-food-btn">
+                                <i class="fas fa-search"></i>
+                                Find Food
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://via.placeholder.com/500x500/transparent/transparent?text=" alt="Delicious Food" class="food-plate">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Food Gallery -->
+    <section class="food-gallery">
+        <div class="container">
+            <div class="gallery-grid">
+                <div class="food-card">
+                    <img src="/app/static/images/plato1.jpeg" alt="Ensalada">
+                    <div class="food-overlay">
+                        <h3>Bandeja de churitos</h3>
+                        <p>$4.50</p>
+                    </div>
+                </div>
+                <div class="food-card">
+                    <img src="/app/static/images/plato2.jpeg" alt="Pasta">
+                    <div class="food-overlay">
+                        <h3>Bandeja de empanada</h3>
+                        <p>$4.50</p>
+                    </div>
+                </div>
+                <div class="food-card">
+                    <img src="/app/static/images/plato3.jpeg" alt="Bowl">
+                    <div class="food-overlay">
+                        <h3>Bandeja de Muffins</h3>
+                        <p>$4.50</p>
+                    </div>
+                </div>
+                <div class="food-card">
+                    <img src="/app/static/images/plato4.jpeg" alt="Sopa">
+                    <div class="food-overlay">
+                        <h3>Pollo relleno en salsa ciruela</h3>
+                        <p>$7.50</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="/app/static/js/index.js"></script>
+</body>
+</html>

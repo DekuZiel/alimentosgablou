@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jaegar Resto - Dashboard</title>
+    <link rel="stylesheet" href="/app/static/css/search.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-store"></i>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active">
+                <i class="fas fa-home"></i>
+            </a>
+        </nav>
+        
+        <div class="logout">
+            <a href="/app/views/index.html" class="nav-item">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>Jaegar Resto</h1>
+                <p class="date">Tuesday, 2 Feb 2021</p>
+            </div>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search for food, coffee, etc...">
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <button class="tab active">Hot Dishes</button>
+            <button class="tab">Cold Dishes</button>
+            <button class="tab">Soup</button>
+            <button class="tab">Grill</button>
+            <button class="tab">Appetizer</button>
+            <button class="tab">Dessert</button>
+        </nav>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <h2>Choose Dishes</h2>
+            <select class="filter-dropdown">
+                <option>Dine In</option>
+                <option>Take Away</option>
+                <option>Delivery</option>
+            </select>
+        </div>
+
+        <!-- Dishes Grid -->
+        <div class="dishes-grid">
+            <div class="dish-card">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&h=300&fit=crop" alt="Spicy seasoned seafood noodles">
+                <h3>Spicy seasoned seafood noodles</h3>
+                <p class="price">$ 2.29</p>
+                <p class="availability">20 Bowls available</p>
+            </div>
+
+            <div class="dish-card">
+                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=300&h=300&fit=crop" alt="Salted Pasta with mushroom sauce">
+                <h3>Salted Pasta with mushroom sauce</h3>
+                <p class="price">$ 2.69</p>
+                <p class="availability">11 Bowls available</p>
+            </div>
+
+            <div class="dish-card">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=300&fit=crop" alt="Beef dumpling in hot and sour soup">
+                <h3>Beef dumpling in hot and sour soup</h3>
+                <p class="price">$ 2.99</p>
+                <p class="availability">16 Bowls available</p>
+            </div>
+
+            <div class="dish-card">
+                <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=300&h=300&fit=crop" alt="Healthy noodle with spinach leaf">
+                <h3>Healthy noodle with spinach leaf</h3>
+                <p class="price">$ 3.29</p>
+                <p class="availability">22 Bowls available</p>
+            </div>
+
+            <div class="dish-card">
+                <img src="https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=300&h=300&fit=crop" alt="Hot spicy fried rice with omelet">
+                <h3>Hot spicy fried rice with omelet</h3>
+                <p class="price">$ 3.49</p>
+                <p class="availability">13 Bowls available</p>
+            </div>
+
+            <div class="dish-card">
+                <img src="https://images.unsplash.com/photo-1496412705862-e0088f16f791?w=300&h=300&fit=crop" alt="Spicy instant noodle with special omelette">
+                <h3>Spicy instant noodle with special omelette</h3>
+                <p class="price">$ 3.59</p>
+                <p class="availability">17 Bowls available</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="/app/static/js/search.js"></script>
+</body>
+</html>

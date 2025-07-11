@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alimentos Gablou</title>
-    <link rel="stylesheet" href="/app/static/css/index.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
@@ -14,8 +16,7 @@
             <div class="container">
                 <div class="nav-wrapper">
                     <div class="logo">
-                        <img src="/app/static/images/logo1.png" alt="Gablou Logo" class="logo-img">
-                        <span class="logo-text">Gablou</span>
+                        <img src="{{ url_for('static', filename='images/logo1.png') }}" alt="Gablou Logo">
                     </div>
                     <div class="nav-right">
                         <div class="delivery-info">
@@ -26,10 +27,10 @@
                             </span>
                         </div>
                         <div class="nav-actions">
-                            <button class="search-btn" onclick="window.location.href='/app/views/search.html'">
+                            <a href="{{ url_for('home.search') }}" class="search-btn">
                                 <i class="fas fa-search"></i>
                                 Search Food
-                            </button>
+                            </a>
                             <button class="login-btn">
                                 <i class="fas fa-user"></i>
                                 Login
@@ -48,7 +49,7 @@
                 <div class="hero-text">
                     <h1>Are you starving?</h1>
                     <p>Within a few clicks, find meals that are accessible near you</p>
-                    
+
                     <div class="search-box">
                         <div class="search-tabs">
                             <button class="tab active" data-tab="delivery">
@@ -73,7 +74,8 @@
                     </div>
                 </div>
                 <div class="hero-image">
-                    <img src="https://via.placeholder.com/500x500/transparent/transparent?text=" alt="Delicious Food" class="food-plate">
+                    <img src="https://via.placeholder.com/500x500/transparent/transparent?text=" alt="Delicious Food"
+                        class="food-plate">
                 </div>
             </div>
         </div>
@@ -83,38 +85,20 @@
     <section class="food-gallery">
         <div class="container">
             <div class="gallery-grid">
+                {% for product in products %}
                 <div class="food-card">
-                    <img src="/app/static/images/plato1.jpeg" alt="Ensalada">
+                    <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}">
                     <div class="food-overlay">
-                        <h3>Bandeja de churitos</h3>
-                        <p>$4.50</p>
+                        <h3>{{ product.name }}</h3>
+                        <p>${{ "%.2f"|format(product.price) }}</p>
                     </div>
                 </div>
-                <div class="food-card">
-                    <img src="/app/static/images/plato2.jpeg" alt="Pasta">
-                    <div class="food-overlay">
-                        <h3>Bandeja de empanada</h3>
-                        <p>$4.50</p>
-                    </div>
-                </div>
-                <div class="food-card">
-                    <img src="/app/static/images/plato3.jpeg" alt="Bowl">
-                    <div class="food-overlay">
-                        <h3>Bandeja de Muffins</h3>
-                        <p>$4.50</p>
-                    </div>
-                </div>
-                <div class="food-card">
-                    <img src="/app/static/images/plato4.jpeg" alt="Sopa">
-                    <div class="food-overlay">
-                        <h3>Pollo relleno en salsa ciruela</h3>
-                        <p>$7.50</p>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>
 
-    <script src="/app/static/js/index.js"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
+
 </html>

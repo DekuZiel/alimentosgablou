@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jaegar Resto - Dashboard</title>
+    <title>Gablou - Menu</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/search.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -17,7 +17,7 @@
         </div>
         
         <nav class="sidebar-nav">
-            <a href="#" class="nav-item active">
+            <a href="{{ url_for('menu.menu_list') }}" class="nav-item active">
                 <i class="fas fa-home"></i>
             </a>
         </nav>
@@ -34,23 +34,28 @@
         <!-- Header -->
         <header class="header">
             <div class="header-left">
-                <h1>Jaegar Resto</h1>
-                <p class="date">Tuesday, 2 Feb 2021</p>
+                <h1>Alimentos Gablou</h1>
+                <p class="date" id="current-date">Loading...</p>
             </div>
             <div class="search-bar">
                 <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search for food, coffee, etc...">
+                <input type="text" placeholder="Search for food, coffee, etc..." id="search-input">
             </div>
         </header>
 
         <!-- Tab Navigation -->
         <nav class="tab-nav">
-            <button class="tab active">Hot Dishes</button>
-            <button class="tab">Cold Dishes</button>
-            <button class="tab">Soup</button>
-            <button class="tab">Grill</button>
-            <button class="tab">Appetizer</button>
-            <button class="tab">Dessert</button>
+            <button class="tab active" data-category="all">All</button>
+            {% if categories %}
+                {% for category in categories %}
+                    <button class="tab" data-category="{{ category }}">{{ category }}</button>
+                {% endfor %}
+            {% else %}
+                <!-- Fallback categories if none from database -->
+                <button class="tab" data-category="Bandejas">Bandejas</button>
+                <button class="tab" data-category="Platos Principales">Platos Principales</button>
+                <button class="tab" data-category="Postres">Postres</button>
+            {% endif %}
         </nav>
 
         <!-- Filter Section -->
@@ -64,57 +69,240 @@
         </div>
 
         <!-- Dishes Grid -->
-        <div class="dishes-grid">
-            <div class="dish-card">
-                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&h=300&fit=crop" alt="Spicy seasoned seafood noodles">
-                <h3>Spicy seasoned seafood noodles</h3>
-                <p class="price">$ 2.29</p>
-                <p class="availability">20 Bowls available</p>
-            </div>
+        <div class="dishes-grid" id="dishes-container">
+            {% if products %}
+                {% for product in products %}
+                <div class="dish-card" data-category="{{ product.category }}" data-name="{{ product.name|lower }}">
+                    {% if product.image.startswith('http') %}
+                        <img src="{{ product.image }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}">
+                    {% endif %}
+                    <h3>{{ product.name }}</h3>
+                    <p class="price">${{ "%.2f"|format(product.price) }}</p>
+                    <p class="availability">{{ product.stock }} available</p>
+                    {% if not product.available %}
+                        <div class="out-of-stock">Out of Stock</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-products">
+                    <i class="fas fa-utensils"></i>
+                    <h3>No products available</h3>
+                    <p>Please check back later or contact us for more information.</p>
+                </div>
+            {% endif %}
+        </div>
 
-            <div class="dish-card">
-                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=300&h=300&fit=crop" alt="Salted Pasta with mushroom sauce">
-                <h3>Salted Pasta with mushroom sauce</h3>
-                <p class="price">$ 2.69</p>
-                <p class="availability">11 Bowls available</p>
-            </div>
-
-            <div class="dish-card">
-                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=300&fit=crop" alt="Beef dumpling in hot and sour soup">
-                <h3>Beef dumpling in hot and sour soup</h3>
-                <p class="price">$ 2.99</p>
-                <p class="availability">16 Bowls available</p>
-            </div>
-
-            <div class="dish-card">
-                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=300&fit=crop" alt="Beef dumpling in hot and sour soup">
-                <h3>Guatita</h3>
-                <p class="price">$ 2.99</p>
-                <p class="availability">16 Bowls available</p>
-            </div>
-
-            <div class="dish-card">
-                <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=300&h=300&fit=crop" alt="Healthy noodle with spinach leaf">
-                <h3>Healthy noodle with spinach leaf</h3>
-                <p class="price">$ 3.29</p>
-                <p class="availability">22 Bowls available</p>
-            </div>
-
-            <div class="dish-card">
-                <img src="https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=300&h=300&fit=crop" alt="Hot spicy fried rice with omelet">
-                <h3>Hot spicy fried rice with omelet</h3>
-                <p class="price">$ 3.49</p>
-                <p class="availability">13 Bowls available</p>
-            </div>
-
-            <div class="dish-card">
-                <img src="https://images.unsplash.com/photo-1496412705862-e0088f16f791?w=300&h=300&fit=crop" alt="Spicy instant noodle with special omelette">
-                <h3>Spicy instant noodle with special omelette</h3>
-                <p class="price">$ 3.59</p>
-                <p class="availability">17 Bowls available</p>
-            </div>
+        <!-- Loading indicator -->
+        <div class="loading-indicator" id="loading" style="display: none;">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading products...</p>
         </div>
     </main>
+
+    <script>
+        // Actualizar fecha
+        function updateDate() {
+            const dateElement = document.getElementById('current-date');
+            const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+            const today = new Date();
+            dateElement.textContent = today.toLocaleDateString('en-US', options);
+        }
+
+        // Contar productos por categoría
+        function updateCategoryCount() {
+            const tabs = document.querySelectorAll('.tab[data-category]');
+            const dishes = document.querySelectorAll('.dish-card');
+            
+            tabs.forEach(tab => {
+                const category = tab.dataset.category;
+                let count = 0;
+                
+                if (category === 'all') {
+                    count = dishes.length;
+                } else {
+                    dishes.forEach(dish => {
+                        if (dish.dataset.category === category) {
+                            count++;
+                        }
+                    });
+                }
+                
+                // Actualizar texto del tab con el contador
+                const tabText = tab.textContent.replace(/\s*\(\d+\)$/, '');
+                tab.textContent = `${tabText} (${count})`;
+            });
+        }
+
+        // Filtrar por categoría
+        function filterByCategory(category) {
+            const dishes = document.querySelectorAll('.dish-card');
+            const loading = document.getElementById('loading');
+            
+            // Mostrar loading
+            loading.style.display = 'block';
+            
+            setTimeout(() => {
+                dishes.forEach(dish => {
+                    if (category === 'all' || dish.dataset.category === category) {
+                        dish.style.display = 'block';
+                        dish.style.animation = 'fadeIn 0.3s ease';
+                    } else {
+                        dish.style.display = 'none';
+                    }
+                });
+                
+                // Ocultar loading
+                loading.style.display = 'none';
+            }, 300);
+        }
+
+        // Buscar productos
+        function searchProducts(query) {
+            const dishes = document.querySelectorAll('.dish-card');
+            const searchTerm = query.toLowerCase();
+            
+            dishes.forEach(dish => {
+                const dishName = dish.dataset.name;
+                if (dishName.includes(searchTerm)) {
+                    dish.style.display = 'block';
+                    dish.style.animation = 'fadeIn 0.3s ease';
+                } else {
+                    dish.style.display = 'none';
+                }
+            });
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDate();
+            updateCategoryCount(); // Agregar contadores a las categorías
+            
+            // Tab navigation
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Filter by category
+                    const category = tab.dataset.category;
+                    filterByCategory(category);
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.getElementById('search-input');
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    searchProducts(e.target.value);
+                }, 300);
+            });
+            
+            // Dish card clicks
+            const dishCards = document.querySelectorAll('.dish-card');
+            dishCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const dishName = card.querySelector('h3').textContent;
+                    const price = card.querySelector('.price').textContent;
+                    
+                    // Add to cart animation
+                    card.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        card.style.transform = '';
+                    }, 200);
+                    
+                    // Show notification (you can implement this)
+                    console.log(`Added ${dishName} to cart - ${price}`);
+                });
+            });
+        });
+    </script>
+
+    <style>
+        /* Additional styles for dynamic content */
+        .no-products {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: #ABBBC2;
+        }
+
+        .no-products i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #EA7C69;
+        }
+
+        .no-products h3 {
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .loading-indicator {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: #ABBBC2;
+        }
+
+        .loading-indicator i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #EA7C69;
+        }
+
+        .out-of-stock {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .dish-card {
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Active tab highlighting */
+        .tab.active {
+            color: #EA7C69;
+            position: relative;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -13px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: #EA7C69;
+            border-radius: 3px;
+        }
+    </style>
 
     <script src="{{ url_for('static', filename='js/search.js') }}"></script>
 </body>

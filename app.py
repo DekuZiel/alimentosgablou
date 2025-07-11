@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from models.database import init_app, db
 from controllers.home_controller import home_bp
@@ -72,9 +73,10 @@ def populate_initial_data():
         print(f"⚠️ Error poblando la base de datos: {e}")
         db.session.rollback()
 
+# Crear instancia de app para gunicorn (NUEVO)
+app = create_app()
+
 if __name__ == '__main__':
-    app = create_app()
-    
     # Crear las tablas y poblar datos
     with app.app_context():
         try:
@@ -92,4 +94,5 @@ if __name__ == '__main__':
             print("🔄 Verificando conexión a la base de datos...")
     
     print("🚀 Iniciando servidor Flask...")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Usar puerto dinámico para producción (MODIFICADO)
+    app.run(debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

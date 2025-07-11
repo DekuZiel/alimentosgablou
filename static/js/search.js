@@ -1,98 +1,165 @@
-// DOM Elements
+// ========== VARIABLES GLOBALES ==========
+const hamburgerMenu = document.getElementById('hamburger-menu');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
 const tabs = document.querySelectorAll('.tab');
 const navItems = document.querySelectorAll('.nav-item');
 const dishCards = document.querySelectorAll('.dish-card');
-const searchInput = document.querySelector('.search-bar input');
+const searchInput = document.querySelector('#search-input');
 const filterDropdown = document.querySelector('.filter-dropdown');
 
-// Tab Switching
-tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-        // Remove active class from all tabs
-        tabs.forEach(t => t.classList.remove('active'));
-        // Add active class to clicked tab
-        tab.classList.add('active');
-        
-        // Filter dishes based on selected tab
-        const category = tab.textContent.toLowerCase();
-        filterDishes(category);
-    });
-});
+// ========== FUNCIONES DE MENÚ MÓVIL ==========
+function toggleMobileMenu() {
+    hamburgerMenu.classList.toggle('active');
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    
+    // Prevenir scroll del body cuando el menú está abierto
+    if (sidebar.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+}
 
-// Sidebar Navigation
+function closeMobileMenu() {
+    hamburgerMenu.classList.remove('active');
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// ========== INICIALIZACIÓN DE MENÚ MÓVIL ==========
+if (hamburgerMenu && sidebar && overlay) {
+    // Toggle menú con hamburger
+    hamburgerMenu.addEventListener('click', toggleMobileMenu);
+    
+    // Cerrar menú con overlay
+    overlay.addEventListener('click', closeMobileMenu);
+    
+    // Cerrar menú al hacer clic en nav items en móvil
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                setTimeout(closeMobileMenu, 200); // Pequeño delay para mejor UX
+            }
+        });
+    });
+    
+    // Cerrar menú al redimensionar ventana
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            closeMobileMenu();
+        }
+    });
+}
+
+// ========== NAVEGACIÓN SIDEBAR ==========
 navItems.forEach(item => {
     item.addEventListener('click', (e) => {
-        // Don't prevent default for logout
+        // Solo prevenir default si no es logout
         if (!item.querySelector('.fa-sign-out-alt')) {
             e.preventDefault();
         }
         
-        // Remove active class from all items
+        // Remover clase active de todos los items
         navItems.forEach(nav => nav.classList.remove('active'));
-        // Add active class to clicked item
+        
+        // Agregar clase active al item clickeado
         item.classList.add('active');
     });
 });
 
-// Dish Card Interactions
-dishCards.forEach(card => {
-    card.addEventListener('click', () => {
-        const dishName = card.querySelector('h3').textContent;
-        const price = card.querySelector('.price').textContent;
-        
-        // Add to order animation
-        card.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            card.style.transform = '';
-        }, 200);
-        
-        // Show notification
-        showNotification(`${dishName} added to order`, 'success');
-    });
-});
+// ========== FUNCIONES DE FECHA ==========
+function updateDate() {
+    const dateElement = document.getElementById('current-date');
+    if (dateElement) {
+        const options = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        };
+        const today = new Date();
+        dateElement.textContent = today.toLocaleDateString('en-US', options);
+    }
+}
 
-// Search Functionality
-searchInput.addEventListener('input', (e) => {
-    const searchTerm = e.target.value.toLowerCase();
+// ========== FUNCIONES DE CATEGORÍAS ==========
+function updateCategoryCount() {
+    const tabs = document.querySelectorAll('.tab[data-category]');
+    const dishes = document.querySelectorAll('.dish-card');
     
-    dishCards.forEach(card => {
-        const dishName = card.querySelector('h3').textContent.toLowerCase();
+    tabs.forEach(tab => {
+        const category = tab.dataset.category;
+        let count = 0;
         
-        if (dishName.includes(searchTerm)) {
-            card.style.display = 'block';
-            card.style.animation = 'fadeIn 0.3s ease';
+        if (category === 'all') {
+            count = dishes.length;
         } else {
-            card.style.display = 'none';
+            dishes.forEach(dish => {
+                if (dish.dataset.category === category) {
+                    count++;
+                }
+            });
         }
-    });
-});
-
-// Filter Dropdown
-filterDropdown.addEventListener('change', (e) => {
-    const filterValue = e.target.value;
-    showNotification(`Filter changed to: ${filterValue}`, 'info');
-});
-
-// Filter dishes by category
-function filterDishes(category) {
-    // This is a simulation - in real app, you'd filter based on actual dish categories
-    dishCards.forEach((card, index) => {
-        card.style.animation = 'fadeOut 0.3s ease';
         
-        setTimeout(() => {
-            // Simulate filtering logic
-            if (category === 'hot dishes' || Math.random() > 0.3) {
-                card.style.display = 'block';
-                card.style.animation = 'fadeIn 0.3s ease';
-            } else {
-                card.style.display = 'none';
-            }
-        }, 300);
+        // Actualizar texto del tab con contador
+        const tabText = tab.textContent.replace(/\s*\(\d+\)$/, '');
+        tab.textContent = `${tabText} (${count})`;
     });
 }
 
-// Notification System
+function filterByCategory(category) {
+    const dishes = document.querySelectorAll('.dish-card');
+    const loading = document.getElementById('loading');
+    
+    // Mostrar loading
+    if (loading) {
+        loading.style.display = 'block';
+    }
+    
+    setTimeout(() => {
+        dishes.forEach(dish => {
+            if (category === 'all' || dish.dataset.category === category) {
+                dish.style.display = 'block';
+                dish.style.animation = 'fadeIn 0.3s ease';
+            } else {
+                dish.style.display = 'none';
+            }
+        });
+        
+        // Ocultar loading
+        if (loading) {
+            loading.style.display = 'none';
+        }
+    }, 300);
+}
+
+// ========== FUNCIONES DE BÚSQUEDA ==========
+function searchProducts(query) {
+    const dishes = document.querySelectorAll('.dish-card');
+    const searchTerm = query.toLowerCase().trim();
+    
+    dishes.forEach(dish => {
+        const dishName = dish.dataset.name || '';
+        if (searchTerm === '' || dishName.includes(searchTerm)) {
+            dish.style.display = 'block';
+            dish.style.animation = 'fadeIn 0.3s ease';
+        } else {
+            dish.style.display = 'none';
+        }
+    });
+}
+
+// ========== SISTEMA DE NOTIFICACIONES ==========
 function showNotification(message, type = 'info') {
+    // Remover notificación existente
+    const existingNotification = document.querySelector('.notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.innerHTML = `
@@ -102,127 +169,197 @@ function showNotification(message, type = 'info') {
     
     document.body.appendChild(notification);
     
-    // Trigger animation
+    // Mostrar animación
     setTimeout(() => {
         notification.classList.add('show');
     }, 100);
     
-    // Remove after 3 seconds
+    // Remover después de 3 segundos
     setTimeout(() => {
         notification.classList.remove('show');
         setTimeout(() => {
-            notification.remove();
+            if (notification.parentNode) {
+                notification.remove();
+            }
         }, 300);
     }, 3000);
 }
 
-// Add necessary styles for notifications and animations
-const style = document.createElement('style');
-style.textContent = `
-    /* Animations */
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    @keyframes fadeOut {
-        from {
-            opacity: 1;
-        }
-        to {
-            opacity: 0;
-        }
-    }
-    
-    /* Notifications */
-    .notification {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #1F1D2B;
-        border: 1px solid #393C49;
-        padding: 16px 24px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        transform: translateY(100px);
-        transition: transform 0.3s ease;
-        z-index: 1000;
-        max-width: 300px;
-    }
-    
-    .notification.show {
-        transform: translateY(0);
-    }
-    
-    .notification.success {
-        border-color: #50D1AA;
-    }
-    
-    .notification.success i {
-        color: #50D1AA;
-    }
-    
-    .notification.info {
-        border-color: #5B6DED;
-    }
-    
-    .notification.info i {
-        color: #5B6DED;
-    }
-    
-    /* Loading State */
-    .loading {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        border: 3px solid #393C49;
-        border-radius: 50%;
-        border-top-color: #EA7C69;
-        animation: spin 1s ease-in-out infinite;
-    }
-    
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-`;
+// ========== EVENT LISTENERS ==========
 
-document.head.appendChild(style);
+// Tabs de categorías
+tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        // Remover active de todos los tabs
+        tabs.forEach(t => t.classList.remove('active'));
+        
+        // Agregar active al tab clickeado
+        tab.classList.add('active');
+        
+        // Filtrar por categoría
+        const category = tab.dataset.category;
+        if (category) {
+            filterByCategory(category);
+        }
+    });
+});
 
-// Initialize with current date
-function updateDate() {
-    const dateElement = document.querySelector('.date');
-    const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
-    const today = new Date();
-    dateElement.textContent = today.toLocaleDateString('en-US', options);
+// Interacciones con cards de platos
+dishCards.forEach(card => {
+    card.addEventListener('click', () => {
+        const dishName = card.querySelector('h3')?.textContent;
+        const price = card.querySelector('.price')?.textContent;
+        
+        // Animación de click
+        card.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            card.style.transform = '';
+        }, 200);
+        
+        // Mostrar notificación
+        if (dishName && price) {
+            showNotification(`${dishName} agregado al carrito - ${price}`, 'success');
+        }
+    });
+});
+
+// Funcionalidad de búsqueda
+if (searchInput) {
+    let searchTimeout;
+    
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            searchProducts(e.target.value);
+        }, 300);
+    });
 }
 
-// Simulate real-time updates
+// Dropdown de filtros
+if (filterDropdown) {
+    filterDropdown.addEventListener('change', (e) => {
+        const filterValue = e.target.value;
+        showNotification(`Filtro cambiado a: ${filterValue}`, 'info');
+    });
+}
+
+// ========== SIMULACIÓN DE ACTUALIZACIONES EN TIEMPO REAL ==========
 function updateAvailability() {
     const availabilities = document.querySelectorAll('.availability');
     
     availabilities.forEach(availability => {
-        const currentValue = parseInt(availability.textContent);
-        const change = Math.random() > 0.5 ? -1 : 0;
-        const newValue = Math.max(0, currentValue + change);
+        const currentText = availability.textContent;
+        const match = currentText.match(/(\d+)/);
         
-        if (change !== 0 && newValue !== currentValue) {
-            availability.textContent = `${newValue} Bowls available`;
-            availability.style.animation = 'fadeIn 0.5s ease';
+        if (match) {
+            const currentValue = parseInt(match[1]);
+            // Simular cambios ocasionales en disponibilidad
+            const change = Math.random() > 0.8 ? (Math.random() > 0.5 ? -1 : 1) : 0;
+            const newValue = Math.max(0, Math.min(50, currentValue + change));
+            
+            if (change !== 0 && newValue !== currentValue) {
+                availability.textContent = `${newValue} available`;
+                availability.style.animation = 'fadeIn 0.5s ease';
+                
+                // Mostrar notificación si un producto se agota
+                if (newValue === 0) {
+                    const dishCard = availability.closest('.dish-card');
+                    const dishName = dishCard?.querySelector('h3')?.textContent;
+                    if (dishName) {
+                        showNotification(`⚠️ ${dishName} se ha agotado`, 'info');
+                    }
+                }
+            }
         }
     });
 }
 
-// Update availability every 30 seconds (simulation)
-setInterval(updateAvailability, 30000);
+// ========== MANEJO DE ERRORES ==========
+window.addEventListener('error', function(e) {
+    console.warn('Error capturado:', e.message);
+    
+    // No mostrar errores de extensiones del navegador al usuario
+    if (e.message.includes('chrome-extension') || e.message.includes('Extension')) {
+        e.preventDefault();
+        return;
+    }
+});
 
-// Initialize
-updateDate();
-console.log('Jaegar Resto Dashboard initialized!');
+window.addEventListener('unhandledrejection', function(e) {
+    console.warn('Promise rejection capturada:', e.reason);
+    
+    // Evitar que errores de extensiones rompan la funcionalidad
+    if (e.reason && e.reason.toString().includes('Extension')) {
+        e.preventDefault();
+    }
+});
+
+// ========== INICIALIZACIÓN ==========
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        // Inicializar fecha
+        updateDate();
+        
+        // Actualizar contadores de categorías
+        updateCategoryCount();
+        
+        // Configurar actualizaciones periódicas
+        setInterval(updateAvailability, 45000); // Cada 45 segundos
+        
+        console.log('✅ Gablou Restaurant Dashboard inicializado correctamente!');
+        
+    } catch (error) {
+        console.error('❌ Error inicializando dashboard:', error);
+        showNotification('Error al inicializar la aplicación', 'info');
+    }
+});
+
+// ========== FUNCIONES DE UTILIDAD ==========
+
+// Función para limpiar búsqueda
+function clearSearch() {
+    if (searchInput) {
+        searchInput.value = '';
+        searchProducts('');
+    }
+}
+
+// Función para resetear filtros
+function resetFilters() {
+    // Resetear tabs
+    tabs.forEach(tab => tab.classList.remove('active'));
+    const allTab = document.querySelector('.tab[data-category="all"]');
+    if (allTab) {
+        allTab.classList.add('active');
+        filterByCategory('all');
+    }
+    
+    // Resetear búsqueda
+    clearSearch();
+    
+    // Resetear dropdown
+    if (filterDropdown) {
+        filterDropdown.selectedIndex = 0;
+    }
+    
+    showNotification('Filtros restablecidos', 'info');
+}
+
+// Función para contar platos visibles
+function getVisibleDishesCount() {
+    const visibleDishes = document.querySelectorAll('.dish-card[style*="display: block"], .dish-card:not([style*="display: none"])');
+    return visibleDishes.length;
+}
+
+// Exponer funciones útiles globalmente para debugging
+window.GablouApp = {
+    toggleMobileMenu,
+    closeMobileMenu,
+    searchProducts,
+    filterByCategory,
+    showNotification,
+    resetFilters,
+    clearSearch,
+    getVisibleDishesCount,
+    updateCategoryCount
+};

@@ -1,3 +1,3 @@
-pip install -r requirements.txt
+pip install -r requeriments.txt
 
 python app.py

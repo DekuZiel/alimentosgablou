@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gablou - Menu</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/search.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
@@ -70,7 +71,7 @@
 
         <!-- Tab Navigation -->
         <nav class="tab-nav">
-            <button class="tab active" data-category="all">All</button>
+            <button class="tab active" data-category="all">Todos</button>
             {% if categories %}
             {% for category in categories %}
             <button class="tab" data-category="{{ category }}">{{ category }}</button>
@@ -85,10 +86,10 @@
 
         <!-- Filter Section -->
         <div class="filter-section">
-            <h2>Choose Dishes</h2>
+            <h2>Selecciona tus platos</h2>
             <select class="filter-dropdown">
-                <option>Dine In</option>
-                <option>Take Away</option>
+                <option>Para comer aquí</option>
+                <option>Para llevar</option>
                 <option>Delivery</option>
             </select>
         </div>
@@ -99,23 +100,26 @@
             {% for product in products %}
             <div class="dish-card" data-category="{{ product.category }}" data-name="{{ product.name|lower }}">
                 {% if product.image.startswith('http') %}
-                <img src="{{ product.image }}" alt="{{ product.name }}">
+                <img src="{{ product.image }}" alt="{{ product.name }}"
+                     onerror="this.src='https://via.placeholder.com/300x300/f0f0f0/999?text=No+Image'">
                 {% else %}
-                <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}">
+                <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}"
+                     onerror="this.src='https://via.placeholder.com/300x300/f0f0f0/999?text=No+Image'">
                 {% endif %}
                 <h3>{{ product.name }}</h3>
+                <p class="description">{{ product.description or '' }}</p>
                 <p class="price">${{ "%.2f"|format(product.price) }}</p>
-                <p class="availability">{{ product.stock }} available</p>
+                <p class="availability">{{ product.stock }} disponibles</p>
                 {% if not product.available %}
-                <div class="out-of-stock">Out of Stock</div>
+                <div class="out-of-stock">Agotado</div>
                 {% endif %}
             </div>
             {% endfor %}
             {% else %}
             <div class="no-products">
                 <i class="fas fa-utensils"></i>
-                <h3>No products available</h3>
-                <p>Please check back later or contact us for more information.</p>
+                <h3>No hay productos disponibles</h3>
+                <p>Por favor, vuelve más tarde o contáctanos para más información.</p>
             </div>
             {% endif %}
         </div>
@@ -123,11 +127,75 @@
         <!-- Loading indicator -->
         <div class="loading-indicator" id="loading" style="display: none;">
             <i class="fas fa-spinner fa-spin"></i>
-            <p>Loading products...</p>
+            <p>Cargando productos...</p>
         </div>
+
+        <!-- Botón flotante adicional para WhatsApp (opcional) -->
+        <button class="whatsapp-float-btn" onclick="cartManager && cartManager.cart.length > 0 ? cartManager.sendToWhatsApp() : cartManager.showNotification('Agrega productos al carrito primero', 'info')" title="Enviar pedido por WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </button>
     </main>
 
+    <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/search.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+    
+    <!-- Script adicional para integración -->
+    <script>
+        // Integración del carrito con la funcionalidad existente
+        document.addEventListener('DOMContentLoaded', function() {
+            // Esperar a que ambos sistemas estén listos
+            setTimeout(function() {
+                console.log('🛒 Sistema de carrito de Gablou iniciado');
+                
+                // Verificar si hay items guardados y mostrar notificación
+                if (cartManager && cartManager.cart.length > 0) {
+                    cartManager.showNotification(`Tienes ${cartManager.cart.length} productos en tu carrito`, 'info');
+                }
+            }, 500);
+        });
+        
+        // Función para agregar estilo al botón flotante de WhatsApp
+        const style = document.createElement('style');
+        style.textContent = `
+            .whatsapp-float-btn {
+                position: fixed;
+                bottom: 90px;
+                right: 20px;
+                width: 56px;
+                height: 56px;
+                background: #25D366;
+                color: white;
+                border: none;
+                border-radius: 50%;
+                font-size: 24px;
+                cursor: pointer;
+                box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+                transition: all 0.3s ease;
+                z-index: 999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .whatsapp-float-btn:hover {
+                background: #22c55e;
+                transform: translateY(-2px) scale(1.05);
+                box-shadow: 0 6px 25px rgba(37, 211, 102, 0.4);
+            }
+            
+            @media (max-width: 768px) {
+                .whatsapp-float-btn {
+                    bottom: 85px;
+                    right: 15px;
+                    width: 50px;
+                    height: 50px;
+                    font-size: 20px;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 
 </html>

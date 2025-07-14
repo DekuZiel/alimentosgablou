@@ -236,27 +236,73 @@ class WhatsAppIntegration {
             return;
         }
 
-        // Fallback a notificación simple
+        // Fallback a notificación mejorada
         const notification = document.createElement('div');
+        
+        // Colores mejorados según el tipo
+        let backgroundColor, textColor, iconColor, borderColor;
+        
+        switch(type) {
+            case 'success':
+                backgroundColor = '#f0fdf4';
+                textColor = '#15803d';
+                iconColor = '#22c55e';
+                borderColor = '#22c55e';
+                break;
+            case 'warning':
+                backgroundColor = '#fffbeb';
+                textColor = '#d97706';
+                iconColor = '#f59e0b';
+                borderColor = '#f59e0b';
+                break;
+            case 'error':
+                backgroundColor = '#fef2f2';
+                textColor = '#dc2626';
+                iconColor = '#ef4444';
+                borderColor = '#ef4444';
+                break;
+            default: // info
+                backgroundColor = '#eff6ff';
+                textColor = '#1d4ed8';
+                iconColor = '#3b82f6';
+                borderColor = '#3b82f6';
+                break;
+        }
+        
+        notification.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'times' : type === 'warning' ? 'exclamation' : 'info'}" style="color: ${iconColor}"></i>
+            <span style="color: ${textColor}; font-weight: 500;">${message}</span>
+        `;
+        
         notification.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
-            background: ${type === 'success' ? '#22c55e' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
-            color: white;
-            padding: 12px 20px;
+            background: ${backgroundColor};
+            padding: 15px 20px;
             border-radius: 8px;
             z-index: 1002;
             font-size: 14px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            animation: slideInRight 0.3s ease;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            border-left: 4px solid ${borderColor};
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 320px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         `;
-        notification.textContent = message;
 
         document.body.appendChild(notification);
 
         setTimeout(() => {
-            notification.remove();
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+
+        setTimeout(() => {
+            notification.style.transform = 'translateX(400px)';
+            setTimeout(() => notification.remove(), 300);
         }, 3000);
     }
 

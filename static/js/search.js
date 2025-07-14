@@ -4,7 +4,6 @@ const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('overlay');
 const tabs = document.querySelectorAll('.tab');
 const navItems = document.querySelectorAll('.nav-item');
-const dishCards = document.querySelectorAll('.dish-card');
 const searchInput = document.querySelector('#search-input');
 const filterDropdown = document.querySelector('.filter-dropdown');
 
@@ -81,7 +80,7 @@ function updateDate() {
             day: 'numeric' 
         };
         const today = new Date();
-        dateElement.textContent = today.toLocaleDateString('en-US', options);
+        dateElement.textContent = today.toLocaleDateString('es-ES', options);
     }
 }
 
@@ -152,18 +151,18 @@ function searchProducts(query) {
     });
 }
 
-// ========== SISTEMA DE NOTIFICACIONES ==========
+// ========== SISTEMA DE NOTIFICACIONES MEJORADO ==========
 function showNotification(message, type = 'info') {
     // Remover notificación existente
-    const existingNotification = document.querySelector('.notification');
+    const existingNotification = document.querySelector('.search-notification');
     if (existingNotification) {
         existingNotification.remove();
     }
     
     const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
+    notification.className = `search-notification ${type}`;
     notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
         <span>${message}</span>
     `;
     
@@ -204,24 +203,8 @@ tabs.forEach(tab => {
     });
 });
 
-// Interacciones con cards de platos
-dishCards.forEach(card => {
-    card.addEventListener('click', () => {
-        const dishName = card.querySelector('h3')?.textContent;
-        const price = card.querySelector('.price')?.textContent;
-        
-        // Animación de click
-        card.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            card.style.transform = '';
-        }, 200);
-        
-        // Mostrar notificación
-        if (dishName && price) {
-            showNotification(`${dishName} agregado al carrito - ${price}`, 'success');
-        }
-    });
-});
+// REMOVER: Las interacciones anteriores con cards de platos
+// Ya no necesitamos esto porque el carrito maneja todo
 
 // Funcionalidad de búsqueda
 if (searchInput) {
@@ -258,7 +241,7 @@ function updateAvailability() {
             const newValue = Math.max(0, Math.min(50, currentValue + change));
             
             if (change !== 0 && newValue !== currentValue) {
-                availability.textContent = `${newValue} available`;
+                availability.textContent = `${newValue} disponibles`;
                 availability.style.animation = 'fadeIn 0.5s ease';
                 
                 // Mostrar notificación si un producto se agota
@@ -266,7 +249,7 @@ function updateAvailability() {
                     const dishCard = availability.closest('.dish-card');
                     const dishName = dishCard?.querySelector('h3')?.textContent;
                     if (dishName) {
-                        showNotification(`⚠️ ${dishName} se ha agotado`, 'info');
+                        showNotification(`⚠️ ${dishName} se ha agotado`, 'warning');
                     }
                 }
             }
@@ -310,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
     } catch (error) {
         console.error('❌ Error inicializando dashboard:', error);
-        showNotification('Error al inicializar la aplicación', 'info');
+        showNotification('Error al inicializar la aplicación', 'warning');
     }
 });
 
@@ -363,3 +346,75 @@ window.GablouApp = {
     getVisibleDishesCount,
     updateCategoryCount
 };
+
+// ========== ESTILOS PARA NOTIFICACIONES MEJORADAS ==========
+// Agregar estilos CSS para las notificaciones con colores corregidos
+const notificationStyles = document.createElement('style');
+notificationStyles.textContent = `
+    /* Notificaciones del sistema de búsqueda con colores legibles */
+    .search-notification {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: #ffffff;
+        color: #333333;
+        padding: 16px 24px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+        z-index: 1100;
+        max-width: 350px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        border-left: 4px solid #3b82f6;
+    }
+
+    .search-notification.show {
+        transform: translateX(0);
+    }
+
+    .search-notification.success {
+        border-left-color: #22c55e;
+        background: #f0fdf4;
+        color: #15803d;
+    }
+
+    .search-notification.success i {
+        color: #22c55e;
+    }
+
+    .search-notification.warning {
+        border-left-color: #f59e0b;
+        background: #fffbeb;
+        color: #d97706;
+    }
+
+    .search-notification.warning i {
+        color: #f59e0b;
+    }
+
+    .search-notification.info {
+        border-left-color: #3b82f6;
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    .search-notification.info i {
+        color: #3b82f6;
+    }
+
+    /* Responsive para notificaciones */
+    @media (max-width: 768px) {
+        .search-notification {
+            top: 90px;
+            right: 15px;
+            max-width: calc(100vw - 30px);
+            font-size: 14px;
+            padding: 12px 16px;
+        }
+    }
+`;
+
+document.head.appendChild(notificationStyles);

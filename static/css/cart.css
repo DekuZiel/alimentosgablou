@@ -324,6 +324,7 @@
     transition: transform 0.3s ease;
     z-index: 1001;
     max-width: 300px;
+    color: #333333; /* Color de texto base oscuro */
 }
 
 .cart-notification.show {
@@ -332,6 +333,8 @@
 
 .cart-notification.success {
     border-left: 4px solid #22c55e;
+    background: #f0fdf4; /* Fondo verde muy claro */
+    color: #15803d; /* Texto verde oscuro */
 }
 
 .cart-notification.success i {
@@ -340,6 +343,8 @@
 
 .cart-notification.warning {
     border-left: 4px solid #f59e0b;
+    background: #fffbeb; /* Fondo amarillo muy claro */
+    color: #d97706; /* Texto naranja oscuro */
 }
 
 .cart-notification.warning i {
@@ -348,6 +353,8 @@
 
 .cart-notification.info {
     border-left: 4px solid #3b82f6;
+    background: #eff6ff; /* Fondo azul muy claro */
+    color: #1d4ed8; /* Texto azul oscuro */
 }
 
 .cart-notification.info i {

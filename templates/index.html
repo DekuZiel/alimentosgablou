@@ -67,7 +67,7 @@
                                 <i class="fas fa-map-marker-alt"></i>
                                 <input type="text" placeholder="Ingresa tu dirección" id="addressInput">
                             </div>
-                            <button class="find-food-btn" onclick="window.location.href='{{ url_for('home.search') }}'">
+                            <button class="find-food-btn" id="findFoodBtn" data-search-url="{{ url_for('home.search') }}">
                                 <i class="fas fa-search"></i>
                                 Ver Menú
                             </button>
@@ -83,34 +83,34 @@
     </section>
 
     <!-- Food Gallery -->
-    <section class="food-gallery">
-        <div class="container">
-            <h2 class="gallery-title">Nuestros Productos Destacados</h2>
-            <div class="gallery-grid">
-                {% for product in products %}
-                <div class="food-card" onclick="window.location.href='{{ url_for('home.search') }}'">
-                    {% if product.image.startswith('http') %}
-                    <img src="{{ product.image }}" alt="{{ product.name }}"
-                         onerror="this.src='https://via.placeholder.com/250x200/f0f0f0/999?text=No+Image'">
-                    {% else %}
-                    <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}"
-                         onerror="this.src='https://via.placeholder.com/250x200/f0f0f0/999?text=No+Image'">
-                    {% endif %}
-                    <div class="food-overlay">
-                        <h3>{{ product.name }}</h3>
-                        <p>${{ "%.2f"|format(product.price) }}</p>
-                    </div>
+<section class="food-gallery">
+    <div class="container">
+        <h2 class="gallery-title">Nuestros Productos Destacados</h2>
+        <div class="gallery-grid">
+            {% for product in products %}
+            <div class="food-card" data-search-url="{{ url_for('home.search') }}" data-product-id="{{ product.id }}">>
+                {% if product.image.startswith('http') %}
+                <img src="{{ product.image }}" alt="{{ product.name }}"
+                     onerror="this.src='https://via.placeholder.com/250x200/f0f0f0/999?text=No+Image'">
+                {% else %}
+                <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}"
+                     onerror="this.src='https://via.placeholder.com/250x200/f0f0f0/999?text=No+Image'">
+                {% endif %}
+                <div class="food-overlay">
+                    <h3>{{ product.name }}</h3>
+                    <p>${{ "%.2f"|format(product.price) }}</p>
                 </div>
-                {% endfor %}
             </div>
-            <div class="gallery-footer">
-                <a href="{{ url_for('home.search') }}" class="view-all-btn">
-                    <i class="fas fa-utensils"></i>
-                    Ver Todo el Menú
-                </a>
-            </div>
+            {% endfor %}
         </div>
-    </section>
+        <div class="gallery-footer">
+            <a href="{{ url_for('home.search') }}" class="view-all-btn">
+                <i class="fas fa-utensils"></i>
+                Ver Todo el Menú
+            </a>
+        </div>
+    </div>
+</section>
 
     <!-- WhatsApp Float Button -->
     <a href="https://wa.me/593983381474?text=¡Hola! Me interesa conocer más sobre sus productos de Gablou." 

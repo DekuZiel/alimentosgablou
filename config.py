@@ -1,5 +1,5 @@
 # ====================================
-# config.py - Configuración Actualizada
+# config.py - Configuración Actualizada con Nueva Base de Datos
 # ====================================
 
 import os
@@ -7,8 +7,8 @@ import os
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'gablou-secret-key-2024'
     
-    # Configuración de MySQL en Railway
-    DATABASE_URL = os.environ.get('DATABASE_URL') or 'mysql+pymysql://root:uSwQTHJytEhnWyhQxcABePnhJoxqxgtM@trolley.proxy.rlwy.net:52009/railway'
+    # Configuración de MySQL en Railway - NUEVA BASE DE DATOS
+    DATABASE_URL = os.environ.get('DATABASE_URL') or 'mysql+pymysql://root:QlkpOSdBlMzeoJVOdcilDCOsWwyyYkXz@interchange.proxy.rlwy.net:59474/railway'
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     

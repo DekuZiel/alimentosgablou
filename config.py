@@ -1,3 +1,7 @@
+# ====================================
+# config.py - Configuración Actualizada
+# ====================================
+
 import os
 
 class Config:
@@ -7,5 +11,16 @@ class Config:
     DATABASE_URL = os.environ.get('DATABASE_URL') or 'mysql+pymysql://root:uSwQTHJytEhnWyhQxcABePnhJoxqxgtM@trolley.proxy.rlwy.net:52009/railway'
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    
+    # Configuración de uploads para administrador
+    UPLOAD_FOLDER = 'static/images'
+    MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5MB máximo
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+    
+    # Configuración de sesiones
+    PERMANENT_SESSION_LIFETIME = 86400  # 24 horas
+    SESSION_COOKIE_SECURE = False  # Cambiar a True en producción con HTTPS
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
     
     DEBUG = True

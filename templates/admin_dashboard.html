@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Gablou Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        /* Header */
+        .admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-left h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .header-left p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-info strong {
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .user-info small {
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #EA7C69;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-card:nth-child(2) {
+            border-left-color: #22c55e;
+        }
+
+        .stat-card:nth-child(3) {
+            border-left-color: #f59e0b;
+        }
+
+        .stat-card:nth-child(4) {
+            border-left-color: #3b82f6;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-title {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .stat-card:nth-child(1) .stat-icon {
+            background: #EA7C69;
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            background: #22c55e;
+        }
+
+        .stat-card:nth-child(3) .stat-icon {
+            background: #f59e0b;
+        }
+
+        .stat-card:nth-child(4) .stat-icon {
+            background: #3b82f6;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        /* Actions */
+        .actions-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .actions-section h2 {
+            margin-bottom: 1rem;
+            color: #333;
+            font-size: 1.3rem;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            background: #EA7C69;
+            border-color: #EA7C69;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #EA7C69;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .action-btn:hover .action-icon {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Recent Products */
+        .recent-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .recent-section h2 {
+            margin-bottom: 1rem;
+            color: #333;
+            font-size: 1.3rem;
+        }
+
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .products-table th,
+        .products-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .products-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .product-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .product-name {
+            font-weight: 500;
+        }
+
+        .product-category {
+            background: #e9ecef;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .product-price {
+            font-weight: 600;
+            color: #EA7C69;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .products-table {
+                font-size: 0.9rem;
+            }
+
+            .products-table th,
+            .products-table td {
+                padding: 0.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card,
+        .actions-section,
+        .recent-section {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .stat-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .stat-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .stat-card:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .actions-section {
+            animation-delay: 0.4s;
+        }
+
+        .recent-section {
+            animation-delay: 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1><i class="fas fa-utensils"></i> Gablou Admin</h1>
+                <p>Panel de administración de productos</p>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <strong>{{ session.admin_full_name }}</strong>
+                    <small>Administrador</small>
+                </div>
+                <a href="{{ url_for('admin.logout') }}" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Total Productos</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                </div>
+                <div class="stat-value">{{ stats.total_products }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Productos Activos</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                <div class="stat-value">{{ stats.active_products }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Productos Inactivos</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                </div>
+                <div class="stat-value">{{ stats.inactive_products }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Categorías</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                </div>
+                <div class="stat-value">{{ stats.categories_count }}</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="actions-section">
+            <h2><i class="fas fa-bolt"></i> Acciones Rápidas</h2>
+            <div class="actions-grid">
+                <a href="{{ url_for('admin.products') }}" class="action-btn">
+                    <div class="action-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div>
+                        <div>Ver Productos</div>
+                        <small>Gestionar todos los productos</small>
+                    </div>
+                </a>
+
+                <a href="{{ url_for('admin.products') }}#create" class="action-btn">
+                    <div class="action-icon">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div>
+                        <div>Nuevo Producto</div>
+                        <small>Agregar producto al menú</small>
+                    </div>
+                </a>
+
+                <a href="{{ url_for('home.search') }}" class="action-btn" target="_blank">
+                    <div class="action-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div>
+                        <div>Ver Sitio</div>
+                        <small>Vista del cliente</small>
+                    </div>
+                </a>
+
+                <a href="#" class="action-btn" onclick="refreshStats()">
+                    <div class="action-icon">
+                        <i class="fas fa-sync"></i>
+                    </div>
+                    <div>
+                        <div>Actualizar</div>
+                        <small>Recargar estadísticas</small>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Recent Products -->
+        <div class="recent-section">
+            <h2><i class="fas fa-clock"></i> Productos Recientes</h2>
+            {% if recent_products %}
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in recent_products %}
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                {% if product.image and product.image != 'default-product.jpg' %}
+                                <img src="{{ url_for('static', filename='images/' + product.image) }}" 
+                                     alt="{{ product.name }}" class="product-image"
+                                     onerror="this.src='https://via.placeholder.com/40x40/f0f0f0/999?text=No+Image'">
+                                {% else %}
+                                <img src="https://via.placeholder.com/40x40/f0f0f0/999?text=No+Image" 
+                                     alt="{{ product.name }}" class="product-image">
+                                {% endif %}
+                                <span class="product-name">{{ product.name }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="product-category">{{ product.category }}</span>
+                        </td>
+                        <td class="product-price">${{ "%.2f"|format(product.price) }}</td>
+                        <td>{{ product.stock }}</td>
+                        <td>
+                            {% if product.available %}
+                            <span class="status-badge status-active">Activo</span>
+                            {% else %}
+                            <span class="status-badge status-inactive">Inactivo</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ product.created_at.strftime('%d/%m/%Y') if product.created_at else '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p style="text-align: center; color: #666; padding: 2rem;">
+                <i class="fas fa-box-open" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                No hay productos registrados aún.
+                <br>
+                <a href="{{ url_for('admin.products') }}" style="color: #EA7C69; text-decoration: none;">
+                    ¡Crea tu primer producto!
+                </a>
+            </p>
+            {% endif %}
+        </div>
+    </main>
+
+    <script>
+        // Función para actualizar estadísticas
+        async function refreshStats() {
+            try {
+                const response = await fetch('/admin/api/stats');
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Actualizar valores con animación
+                    updateStatValue(0, result.stats.total_products);
+                    updateStatValue(1, result.stats.active_products);
+                    updateStatValue(2, result.stats.inactive_products);
+                    updateStatValue(3, result.stats.categories_count);
+                    
+                    showNotification('Estadísticas actualizadas', 'success');
+                }
+            } catch (error) {
+                console.error('Error actualizando estadísticas:', error);
+                showNotification('Error al actualizar estadísticas', 'error');
+            }
+        }
+
+        function updateStatValue(index, newValue) {
+            const statCards = document.querySelectorAll('.stat-value');
+            const statElement = statCards[index];
+            
+            // Animación de actualización
+            statElement.style.transform = 'scale(1.1)';
+            statElement.style.color = '#EA7C69';
+            
+            setTimeout(() => {
+                statElement.textContent = newValue;
+                statElement.style.transform = 'scale(1)';
+                statElement.style.color = '#333';
+            }, 200);
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#22c55e' : '#ef4444'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                font-weight: 500;
+                transform: translateX(400px);
+                transition: transform 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Dashboard de administración cargado');
+            
+            // Auto-refresh estadísticas cada 5 minutos
+            setInterval(refreshStats, 5 * 60 * 1000);
+        });
+    </script>
+</body>
+
+</html>

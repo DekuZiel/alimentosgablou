@@ -23,7 +23,7 @@
                             <span>Deliver to:</span>
                             <span class="location">
                                 <i class="fas fa-map-marker-alt"></i>
-                                Current Location: Mohammadpur Bus Stand, Dhaka
+                                Current Location: Quito, Ecuador
                             </span>
                         </div>
                         <div class="nav-actions">
@@ -31,10 +31,11 @@
                                 <i class="fas fa-search"></i>
                                 Search Food
                             </a>
-                            <button class="login-btn">
-                                <i class="fas fa-user"></i>
-                                Login
-                            </button>
+                            <!-- ACTUALIZADO: Botón de admin en lugar de login genérico -->
+                            <a href="{{ url_for('admin.login') }}" class="login-btn admin-btn">
+                                <i class="fas fa-user-shield"></i>
+                                Admin
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -47,8 +48,8 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1>Are you starving?</h1>
-                    <p>Within a few clicks, find meals that are accessible near you</p>
+                    <h1>¿Tienes hambre?</h1>
+                    <p>Con unos pocos clics, encuentra comidas deliciosas cerca de ti</p>
 
                     <div class="search-box">
                         <div class="search-tabs">
@@ -64,11 +65,11 @@
                         <div class="search-form">
                             <div class="location-input">
                                 <i class="fas fa-map-marker-alt"></i>
-                                <input type="text" placeholder="Enter Your Address" id="addressInput">
+                                <input type="text" placeholder="Ingresa tu dirección" id="addressInput">
                             </div>
-                            <button class="find-food-btn">
+                            <button class="find-food-btn" onclick="window.location.href='{{ url_for('home.search') }}'">
                                 <i class="fas fa-search"></i>
-                                Find Food
+                                Ver Menú
                             </button>
                         </div>
                     </div>
@@ -84,10 +85,17 @@
     <!-- Food Gallery -->
     <section class="food-gallery">
         <div class="container">
+            <h2 class="gallery-title">Nuestros Productos Destacados</h2>
             <div class="gallery-grid">
                 {% for product in products %}
-                <div class="food-card">
-                    <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}">
+                <div class="food-card" onclick="window.location.href='{{ url_for('home.search') }}'">
+                    {% if product.image.startswith('http') %}
+                    <img src="{{ product.image }}" alt="{{ product.name }}"
+                         onerror="this.src='https://via.placeholder.com/250x200/f0f0f0/999?text=No+Image'">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}"
+                         onerror="this.src='https://via.placeholder.com/250x200/f0f0f0/999?text=No+Image'">
+                    {% endif %}
                     <div class="food-overlay">
                         <h3>{{ product.name }}</h3>
                         <p>${{ "%.2f"|format(product.price) }}</p>
@@ -95,10 +103,125 @@
                 </div>
                 {% endfor %}
             </div>
+            <div class="gallery-footer">
+                <a href="{{ url_for('home.search') }}" class="view-all-btn">
+                    <i class="fas fa-utensils"></i>
+                    Ver Todo el Menú
+                </a>
+            </div>
         </div>
     </section>
 
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/593983381474?text=¡Hola! Me interesa conocer más sobre sus productos de Gablou." 
+       class="whatsapp-float" target="_blank" title="Contáctanos por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    
+    <!-- Estilos adicionales para las nuevas características -->
+    <style>
+        .admin-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: white !important;
+            border-radius: 8px !important;
+            padding: 10px 16px !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .admin-btn:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+        }
+        
+        .gallery-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 3rem;
+        }
+        
+        .gallery-footer {
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        .view-all-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #EA7C69;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(234, 124, 105, 0.3);
+        }
+        
+        .view-all-btn:hover {
+            background: #d66654;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(234, 124, 105, 0.4);
+        }
+        
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #25D366;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            text-decoration: none;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            animation: pulse 2s infinite;
+        }
+        
+        .whatsapp-float:hover {
+            background: #22c55e;
+            transform: scale(1.1);
+            animation: none;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+            }
+            50% {
+                box-shadow: 0 4px 20px rgba(37, 211, 102, 0.7), 0 0 0 10px rgba(37, 211, 102, 0.1);
+            }
+            100% {
+                box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .whatsapp-float {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .gallery-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </body>
 
 </html>

@@ -7,6 +7,8 @@
     <title>Gablou - Menu</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/search.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
+    <!-- NUEVO: CSS del modal de productos -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/product-modal.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
@@ -113,6 +115,7 @@
                 {% if not product.available %}
                 <div class="out-of-stock">Agotado</div>
                 {% endif %}
+                <!-- NOTA: El botón "Ver más" se agregará automáticamente por JavaScript -->
             </div>
             {% endfor %}
             {% else %}
@@ -136,9 +139,11 @@
         </button>
     </main>
 
-    <!-- Scripts -->
+    <!-- Scripts existentes -->
     <script src="{{ url_for('static', filename='js/search.js') }}"></script>
     <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+    <!-- NUEVO: JavaScript del modal de productos -->
+    <script src="{{ url_for('static', filename='js/product-modal.js') }}"></script>
     
     <!-- Script adicional para integración -->
     <script>
@@ -147,10 +152,16 @@
             // Esperar a que ambos sistemas estén listos
             setTimeout(function() {
                 console.log('🛒 Sistema de carrito de Gablou iniciado');
+                console.log('👁️ Sistema de modal de productos iniciado');
                 
                 // Verificar si hay items guardados y mostrar notificación
                 if (cartManager && cartManager.cart.length > 0) {
                     cartManager.showNotification(`Tienes ${cartManager.cart.length} productos en tu carrito`, 'info');
+                }
+
+                // Inicializar botones "Ver más" para productos existentes
+                if (productModal) {
+                    productModal.refreshViewMoreButtons();
                 }
             }, 500);
         });
